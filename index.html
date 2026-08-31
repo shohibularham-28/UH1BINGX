@@ -1299,11 +1299,11 @@ function buildAnswerReport(){
   return header + '\n' + lines.join('\n');
 }
 
-const GFORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSd7qEcdRdMUASAIiiKVM4eGQkR9F5TlBlm5jemKZQu1_ft3Xw/formResponse';
-const GFORM_ENTRY_NAME = 'entry.925588259';
-const GFORM_ENTRY_CLASS = 'entry.653378976';
-const GFORM_ENTRY_ANSWER = 'entry.295037101';
-const GFORM_ENTRY_SCORE = 'entry.680091111';
+const GFORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSelRC84_2TymjK6Ewa3zfYIAvmD_2sePEh0-zLdw71EX3yYEg/formResponse';
+const GFORM_ENTRY_NAME = 'entry.1215958487';
+const GFORM_ENTRY_CLASS = 'entry.928005117';
+const GFORM_ENTRY_ANSWER = 'entry.1406651719';
+const GFORM_ENTRY_SCORE = 'entry.1591162386';
 let pendingSend = null;
 
 function isReallyOnline(){
