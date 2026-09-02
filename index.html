@@ -189,6 +189,20 @@
   .retry-send{border-color:var(--bad); color:var(--bad);}
   .retry-send:hover{background:var(--bad-bg);}
 
+  .action-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+    padding:10px 18px; border-radius:99px; cursor:pointer;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink);
+    text-decoration:none; transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .action-btn:hover{background:#f3f1ea;}
+  .resend-btn{border-color:var(--t1); color:var(--t1);}
+  .resend-btn:hover{background:var(--t1-bg);}
+  .check-sheet-btn{border-color:var(--t2); color:var(--t2);}
+  .check-sheet-btn:hover{background:var(--t2-bg);}
+  .submit-row-actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:4px;}
+
   .stage{margin-top:22px;}
   .stage-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
   .genre-tag{
@@ -581,6 +595,10 @@
     <div class="submit-row">
       <div class="send-note" id="sendNote"></div>
       <button class="ghost retry-send" id="retrySendBtn" type="button" style="display:none;">Try Sending Again</button>
+      <div class="submit-row-actions">
+        <button class="action-btn resend-btn" id="resubmitBtn" type="button" style="display:none;">🔁 Submit Ulang</button>
+        <a class="action-btn check-sheet-btn" id="checkSheetBtn" href="https://docs.google.com/spreadsheets/d/1Wr7Td1-_gO6vcIeipe-0UoTImjaV9IN4YpG-N7TZWCg/edit?usp=sharing" target="_blank" rel="noopener noreferrer" style="display:none;">📊 Cek Pengumpulan</a>
+      </div>
     </div>
   </div>
 
@@ -1276,7 +1294,11 @@ function grade(auto){
   saveState();
   resultsBox.scrollIntoView({behavior:'smooth', block:'start'});
 
-  attemptSend(name, stuClass, {nilai, earned, total, penalti, violationCount});
+  lastScoreForSend = {nilai, earned, total, penalti, violationCount};
+  document.getElementById('resubmitBtn').style.display = 'inline-flex';
+  document.getElementById('checkSheetBtn').style.display = 'inline-flex';
+
+  attemptSend(name, stuClass, lastScoreForSend);
 }
 
 function buildAnswerReport(){
@@ -1305,6 +1327,7 @@ const GFORM_ENTRY_CLASS = 'entry.928005117';
 const GFORM_ENTRY_ANSWER = 'entry.1406651719';
 const GFORM_ENTRY_SCORE = 'entry.1591162386';
 let pendingSend = null;
+let lastScoreForSend = null;
 
 function isReallyOnline(){
   return new Promise(resolve=>{
@@ -1343,6 +1366,13 @@ document.getElementById('retrySendBtn').addEventListener('click', ()=>{
   if(pendingSend){
     attemptSend(pendingSend.name, pendingSend.stuClass, pendingSend.score);
   }
+});
+
+document.getElementById('resubmitBtn').addEventListener('click', ()=>{
+  if(!lastScoreForSend) return;
+  const name = document.getElementById('stuName').value.trim();
+  const stuClass = document.getElementById('stuClass').value.trim();
+  attemptSend(name, stuClass, lastScoreForSend);
 });
 
 function sendResultToForm(name, stuClass, score){
@@ -1740,6 +1770,9 @@ if(saved){
     document.getElementById('resultsBox').classList.add('show');
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('timerBadge').textContent = 'Finished';
+    lastScoreForSend = {nilai: nilaiR, earned: earnedR, total: totalR, penalti: penaltiR, violationCount};
+    document.getElementById('resubmitBtn').style.display = 'inline-flex';
+    document.getElementById('checkSheetBtn').style.display = 'inline-flex';
   } else {
     examActive = true;
     requestExamFullscreen();
